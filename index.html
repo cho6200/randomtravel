@@ -3,369 +3,171 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>무계획 여행 추천 (MVP)</title>
+  <title>무계획 여행 추천 (Naver 전용 MVP)</title>
   <style>
-    :root { --bg:#0b0e11; --panel:#141821; --ink:#e8eef6; --muted:#96a1b2; --accent:#7dd3fc; --accent2:#a78bfa; }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Helvetica, Arial; background: linear-gradient(180deg,#0b0e11,#0f1220 40%,#0b0e11); color: var(--ink); }
-    header { padding: 20px 16px; text-align: center; }
-    header h1 { margin: 0 0 6px; font-size: clamp(22px,4vw,32px); letter-spacing: -0.3px; }
-    header p { margin: 0; color: var(--muted); font-size: 14px; }
-    .wrap { max-width: 1100px; margin: 10px auto 40px; padding: 0 16px 24px; display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
-    @media (max-width: 980px){ .wrap { grid-template-columns: 1fr; } }
+    :root {
+      --bg:#ffffff; --panel:#ffffff; --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --accent:#2563eb;
+    }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Helvetica, Arial; background:var(--bg); color:var(--ink);}    
+    header{ padding:20px 16px; text-align:center; border-bottom:1px solid var(--line);}    
+    header h1{ margin:0 0 6px; font-size: clamp(22px,4vw,32px); letter-spacing:-0.3px; }
+    header p{ margin:0; color:var(--muted); font-size:14px; }
 
-    .card { background: linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.004)); border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
-    .pane { padding: 16px; }
-    .pane h2 { margin: 0 0 14px; font-size: 18px; }
-    .grid { display: grid; gap: 10px; }
-    .row { display: grid; gap: 8px; }
-    .row.inline { grid-template-columns: 1fr 1fr; gap: 8px; }
-    label { font-size: 13px; color: var(--muted); }
-    input[type="text"], input[type="number"], select { width: 100%; background: #0f1420; border: 1px solid rgba(255,255,255,0.08); color: var(--ink); padding: 10px 12px; border-radius: 10px; outline: none; }
-    input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(180deg,#1f2937,#111827); color: #eaf2ff; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; cursor: pointer; text-decoration: none; font-weight: 600; }
-    .btn:hover { filter: brightness(1.06); }
-    .btn.primary { background: linear-gradient(180deg, #2ec7ff, #3b82f6); color: #041016; border-color: rgba(255,255,255,0.2); }
-    .btn.alt { background: linear-gradient(180deg,#6ee7b7,#34d399); color: #062014; }
-    .btn.small { font-size: 12px; padding: 6px 10px; }
-    .flex { display:flex; align-items:center; gap:8px; }
-    .stack { display:flex; flex-direction:column; gap:8px; }
-    .muted { color: var(--muted); font-size: 12px; }
-    .map { height: 520px; width: 100%; border-radius: 16px; overflow: hidden; }
-    .result { display: grid; grid-template-columns: 1fr; gap: 8px; }
-    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,0.08); font-size:12px; color: var(--muted); }
-    .k { color:#061015; background: linear-gradient(180deg,#a7f3d0,#34d399); }
-    .links { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
-    .links a { text-align:center; }
-    .warning { color:#ffd6a6; font-size:12px; }
-    footer { text-align:center; color:var(--muted); font-size:12px; padding:12px 0 20px; }
+    .wrap{ max-width: 1000px; margin: 16px auto 40px; padding: 0 16px; display:grid; grid-template-columns: 1fr; gap:12px; }
+
+    .card{ background: var(--panel); border:1px solid var(--line); border-radius: 14px; box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
+    .pane{ padding:16px; }
+    .pane h2{ margin:0 0 12px; font-size:18px; }
+
+    .grid{ display:grid; gap:10px; }
+    .row{ display:grid; gap:8px; }
+    .row.inline{ grid-template-columns: 1fr 1fr; gap:10px; }
+
+    label{ font-size:13px; color:var(--muted); }
+    input[type="text"], input[type="number"], select{ width:100%; background:#fff; border:1px solid var(--line); color:var(--ink); padding:10px 12px; border-radius:10px; outline:none; }
+
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#111827; color:#fff; padding:10px 14px; border:1px solid #0f172a; border-radius:10px; cursor:pointer; text-decoration:none; font-weight:600; }
+    .btn:hover{ filter:brightness(1.06); }
+    .btn.small{ font-size:12px; padding:6px 10px; }
+    .btn.ghost{ background:#fff; color:#111827; border:1px solid var(--line); }
+    .btn.primary{ background:#2563eb; border-color:#1d4ed8; }
+    .muted{ color:var(--muted); font-size:12px; }
+
+    .links{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px; }
+    .links a{ text-align:center; }
+    .divider{ border-top:1px dashed var(--line); margin:12px 0; }
+
+    .k{ display:inline-block; padding:2px 8px; background:#eef2ff; color:#1e40af; border:1px solid #c7d2fe; border-radius:999px; font-size:12px; }
+
+    footer{ text-align:center; color:var(--muted); font-size:12px; padding:20px 0 32px; }
   </style>
-  <!-- Kakao Map JS SDK: 교체 필수 -->
-  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=KAKAO_APP_KEY_HERE&libraries=services"></script>
+  <!-- Naver Maps JS API (Geocoder 모듈만 사용) : ncpClientId 교체 필수 -->
+  <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_NCP_CLIENT_ID&submodules=geocoder"></script>
 </head>
 <body>
   <header>
-    <h1>무계획 여행 추천</h1>
-    <p>현재 위치와 간단한 취향만 선택하면, 주변의 랜덤 여행지를 바로 추천해드려요.</p>
+    <h1>무계획 여행 추천 (Naver 전용)</h1>
+    <p>현재 위치를 주소로 표시하고, 네이버 지도 길찾기로 바로 연동합니다. (카카오는 미사용)</p>
   </header>
 
   <div class="wrap">
-    <!-- 왼쪽: 컨트롤 -->
     <section class="card pane" id="controls">
-      <h2>조건 입력</h2>
+      <h2>기본 기능</h2>
       <div class="grid">
         <div class="row">
           <label>현재 위치</label>
-          <div class="flex">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <button class="btn small" id="btnUseGPS">📍 현재 위치 가져오기</button>
-            <span class="muted" id="locText">위치 미확인</span>
+            <span class="k" id="addrBadge">주소 미확인</span>
+            <span class="muted" id="locText">위치 좌표 대기중</span>
           </div>
+          <span class="muted">※ 브라우저 위치 권한 허용이 필요합니다. HTTPS 환경 권장(로컬은 localhost 예외).</span>
         </div>
 
         <div class="row inline">
           <div>
-            <label>차량 이동 가능?</label>
-            <select id="byCar">
-              <option value="yes">예</option>
-              <option value="no">아니오</option>
-            </select>
+            <label>목적지 위도(lat)</label>
+            <input id="destLat" type="text" placeholder="예: 37.5665" />
           </div>
           <div>
-            <label>이동 가능 거리 (km)</label>
-            <input id="maxKm" type="number" min="1" step="1" placeholder="예: 50" />
+            <label>목적지 경도(lng)</label>
+            <input id="destLng" type="text" placeholder="예: 126.9780" />
           </div>
         </div>
-
-        <div class="row inline">
-          <div>
-            <label>원하는 컨셉</label>
-            <select id="concept">
-              <option value="auto" selected>아무거나(근처 관광명소)</option>
-              <option value="mountain">산/등산</option>
-              <option value="sea">바다/해변</option>
-              <option value="lake">호수/강</option>
-              <option value="culture">전시/문화</option>
-              <option value="park">공원/산책</option>
-            </select>
-          </div>
-          <div>
-            <label>누구랑?</label>
-            <select id="withWho">
-              <option value="solo">혼자</option>
-              <option value="couple">커플</option>
-              <option value="kids">아이랑</option>
-              <option value="family">가족</option>
-              <option value="friends">친구</option>
-            </select>
-          </div>
+        <div class="row">
+          <label>목적지 이름(선택)</label>
+          <input id="destName" type="text" placeholder="예: 서울시청" />
         </div>
 
         <div class="row">
-          <label>소요 시간</label>
-          <select id="duration">
-            <option value="day">당일</option>
-            <option value="overnight">1박</option>
-          </select>
-        </div>
-
-        <div class="row">
-          <button class="btn primary" id="btnRecommend">🎲 랜덤 여행지 추천 받기</button>
-          <span class="muted">Tip: 조건을 바꿔가며 여러 번 뽑아보세요.</span>
-        </div>
-
-        <div class="row">
-          <button class="btn" id="btnFood">🍽️ 주변 맛집 랜덤</button>
-          <button class="btn" id="btnCafe">☕ 주변 카페 랜덤</button>
-          <span class="muted">여행지 선택 후 활성화됩니다.</span>
+          <button class="btn primary" id="btnNaverCar">🚗 네이버 자동차 길찾기</button>
+          <button class="btn ghost" id="btnNaverPublic">🚉 네이버 대중교통 길찾기</button>
+          <span class="muted">현재 버전은 ‘네이버 길찾기’만 활성화되어 있습니다.</span>
         </div>
       </div>
-
-      <hr style="opacity:.12;margin:14px 0;"/>
-      <div class="warning">※ 브라우저 위치권한 허용이 필요합니다. 추천 결과는 카카오 장소 데이터 기반이며, 실제 영업/출입 가능 여부는 현장에서 다시 확인해주세요.</div>
-    </section>
-
-    <!-- 오른쪽: 결과/지도 -->
-    <section class="card pane">
-      <div class="result" id="resultBox">
-        <div>
-          <div id="title" style="font-weight:800;font-size:18px;">여행지를 추천해드릴게요</div>
-          <div id="subtitle" class="muted">조건을 입력하고 상단의 버튼을 눌러주세요.</div>
-        </div>
-        <div class="grid" style="gap:6px;">
-          <div class="pill">거리 <span id="distancePill"></span></div>
-          <div class="pill">분류 <span id="categoryPill"></span></div>
-          <div class="pill">주소 <span id="addrPill"></span></div>
-        </div>
-        <div class="links" id="linkBox" style="margin-top:6px;">
-          <a class="btn" id="naverCar" target="_blank" rel="noopener">네이버 자동차 길찾기</a>
-          <a class="btn" id="naverPublic" target="_blank" rel="noopener">네이버 대중교통</a>
-          <a class="btn" id="tmapCar" target="_blank" rel="noopener">티맵 길찾기</a>
-        </div>
-      </div>
-      <div class="pane">
-        <div id="map" class="map"></div>
-      </div>
+      <div class="divider"></div>
+      <div class="muted">다음 단계로, 랜덤 관광지/맛집 추천을 네이버 오픈API(로컬/검색)로 연동해 드릴 수 있습니다. (보안상 서버 키 필요)</div>
     </section>
   </div>
 
-  <footer>© 2025 무계획 여행 추천 — Kakao Map 데이터 기반 MVP</footer>
+  <footer>© 2025 무계획 여행 추천 — Naver Maps/Geocoder 기반 간이 MVP</footer>
 
   <script>
-    // ===== Utilities ===== //
-    const $ = sel => document.querySelector(sel);
-    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+    const $ = s => document.querySelector(s);
 
-    function haversine(lat1, lon1, lat2, lon2) {
-      const R = 6371e3; // meters
-      const toRad = d => d * Math.PI / 180;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
-      const a = Math.sin(dLat/2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2) ** 2;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return R * c; // meters
-    }
-
-    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
-
-    function fmtKm(m){ return (m/1000).toFixed(m>=2000?1:2) + ' km'; }
-
-    // ===== App State ===== //
-    const state = {
-      user: { lat: 37.5665, lng: 126.9780, name: '현재 위치(대략)' }, // default 서울시청 근처
-      map: null,
-      marker: null,
-      places: null,
-      selected: null,
-    };
-
-    // Kakao Places 서비스 핸들러
-    let placesService;
-
-    // ===== Initialize Map ===== //
-    function bootMap(){
-      const container = document.getElementById('map');
-      const options = { center: new kakao.maps.LatLng(state.user.lat, state.user.lng), level: 6 };
-      state.map = new kakao.maps.Map(container, options);
-      state.marker = new kakao.maps.Marker({ position: options.center });
-      state.marker.setMap(state.map);
-      placesService = new kakao.maps.services.Places();
-    }
-
-    // ===== Geolocation ===== //
+    // 브라우저 Geolocation → 네이버 Geocoder(역지오코딩)으로 주소 표시
     async function useGPS(){
       if(!navigator.geolocation){ alert('이 브라우저는 위치정보를 지원하지 않습니다.'); return; }
-      $('#locText').textContent = '가져오는 중…';
-      navigator.geolocation.getCurrentPosition((pos)=>{
+      $('#addrBadge').textContent = '가져오는 중…';
+      navigator.geolocation.getCurrentPosition(async (pos)=>{
         const { latitude, longitude } = pos.coords;
-        state.user.lat = latitude; state.user.lng = longitude; state.user.name = '현재 위치';
-        $('#locText').textContent = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-        const latlng = new kakao.maps.LatLng(latitude, longitude);
-        state.map.setCenter(latlng);
-        state.marker.setPosition(latlng);
+        $('#locText').textContent = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+        // 역지오코딩 (좌표 → 주소)
+        try{
+          const latlng = new naver.maps.LatLng(latitude, longitude);
+          naver.maps.Service.reverseGeocode({
+            coords: latlng,
+            orders: [
+              naver.maps.Service.OrderType.ROAD_ADDR, // 도로명 주소 우선
+              naver.maps.Service.OrderType.ADDR      // 지번 주소 보조
+            ].join(',')
+          }, function(status, response){
+            if (status !== naver.maps.Service.Status.OK) {
+              $('#addrBadge').textContent = '주소 변환 실패';
+              return;
+            }
+            const result = response.v2, areas = result?.results || [];
+            if(areas.length){
+              const area = areas[0];
+              const name = area.roadaddress?.address || area.address?.jibunAddress || '주소 미확인';
+              $('#addrBadge').textContent = name;
+              // 시작점 텍스트도 주소로 교체
+            } else {
+              $('#addrBadge').textContent = '주소 없음';
+            }
+          });
+        } catch(e){
+          $('#addrBadge').textContent = '주소 변환 오류';
+          console.error(e);
+        }
+        // 길찾기 출발지로 저장
+        window.__start = { lat: latitude, lng: longitude };
       }, (err)=>{
-        alert('위치 권한을 허용해주세요. ('+ err.message +')\n서울시청으로 대체합니다.');
-        $('#locText').textContent = '위치 미확인';
+        alert('위치 권한을 허용해주세요. ('+ err.message +')');
+        $('#addrBadge').textContent = '주소 미확인';
       }, { enableHighAccuracy:true, timeout: 10000 });
     }
 
-    // ===== Concept -> Kakao Query ===== //
-    const conceptQueries = {
-      auto: { type: 'category', value: 'AT4', keywords: [] }, // 관광명소 카테고리
-      mountain: { type: 'keyword', value: null, keywords: ['등산로','산책로','국립공원','산 전망대','정상','둘레길'] },
-      sea: { type: 'keyword', value: null, keywords: ['해변','해수욕장','항구','포구','해안산책로','방파제'] },
-      lake: { type: 'keyword', value: null, keywords: ['호수공원','호수','강변','섬','섬마을'] },
-      culture: { type: 'keyword', value: null, keywords: ['박물관','미술관','전시관','문화재','성곽','한옥마을'] },
-      park: { type: 'keyword', value: null, keywords: ['도시공원','근린공원','수목원','생태공원','둘레길'] },
-    };
-
-    function pickRadiusMeters(){
-      const byCar = $('#byCar').value === 'yes';
-      const kmInput = parseInt($('#maxKm').value || '0', 10);
-      const duration = $('#duration').value; // day or overnight
-      // 기본치 설정
-      let km = byCar ? (duration==='day' ? 80 : 200) : (duration==='day' ? 25 : 60);
-      if(kmInput > 0) km = kmInput;
-      // Kakao Places radius는 최대 20000m (문서 기준) — 안전하게 20km씩 타일링
-      return Math.max(1000, Math.min(km * 1000, 20000));
-    }
-
-    function composeCandidateQueries(conceptKey){
-      const c = conceptQueries[conceptKey];
-      if(!c) return [];
-      if(c.type === 'category') return [{ kind:'category', value:c.value }];
-      const ks = c.keywords.length ? c.keywords : ['관광지'];
-      return ks.map(k => ({ kind: 'keyword', value: k }));
-    }
-
-    function searchAround({ radius, conceptKey }){
-      return new Promise(async (resolve) => {
-        const list = [];
-        const tasks = composeCandidateQueries(conceptKey).slice(0,6); // 과도한 호출 방지
-        let pending = tasks.length;
-        const loc = new kakao.maps.LatLng(state.user.lat, state.user.lng);
-        if(pending === 0){ resolve([]); return; }
-        const cb = (data, status) => {
-          if (status === kakao.maps.services.Status.OK && Array.isArray(data)) {
-            for(const p of data){
-              // Kakao JS Places는 id 필드가 있음
-              list.push(p);
-            }
-          }
-          pending--; if(pending===0){ resolve(list); }
-        };
-        for(const q of tasks){
-          if(q.kind==='category') { placesService.categorySearch(q.value, cb, { location: loc, radius }); }
-          else { placesService.keywordSearch(q.value, cb, { location: loc, radius, sort: kakao.maps.services.SortBy.DISTANCE }); }
-          await sleep(120); // 살짝 간격 (호출 제한 여유)
-        }
-      });
-    }
-
-    function uniqueById(arr){
-      const m = new Map();
-      for(const x of arr){ if(!m.has(x.id)) m.set(x.id, x); }
-      return Array.from(m.values());
-    }
-
-    function chooseBest(cands){
-      // 단순 무작위 + withWho에 따른 가벼운 가중치
-      const who = $('#withWho').value;
-      const keywords = {
-        kids: ['공원','과학관','체험','동물원','키즈','박물관'],
-        couple: ['전망','야경','스카이','해변','둘레길','산책'],
-        solo: ['전시','책','서점','산책','미술관'],
-        family: ['공원','야외','체험','박물관'],
-        friends: ['먹거리','시장','테마','랜드'],
-      }[who] || [];
-      const score = p => {
-        const name = (p.place_name||'') + ' ' + (p.category_name||'');
-        let s = Math.random();
-        for(const k of keywords){ if(name.includes(k)) s += 0.6; }
-        return s;
-      };
-      return cands.sort((a,b)=>score(b)-score(a))[0];
-    }
-
-    function showSelection(p){
-      state.selected = p;
-      const lat = parseFloat(p.y), lng = parseFloat(p.x);
-      const dist = haversine(state.user.lat, state.user.lng, lat, lng);
-      $('#title').textContent = p.place_name || '선택된 장소';
-      $('#subtitle').textContent = (p.phone?`☎ ${p.phone} · `:'') + (p.place_url? '상세보기 열기' : '');
-      $('#distancePill').textContent = fmtKm(dist);
-      $('#categoryPill').textContent = p.category_name || '—';
-      $('#addrPill').textContent = p.road_address_name || p.address_name || '—';
-
-      // 지도 이동 & 마커 표시
-      const latlng = new kakao.maps.LatLng(lat, lng);
-      state.map.setCenter(latlng);
-      state.map.setLevel(5);
-      state.marker.setPosition(latlng);
-
-      // 길찾기 링크 구성
+    function openNaverRoute(mode){
+      const s = window.__start;
+      if(!s){ alert('먼저 현재 위치를 가져와 주세요.'); return; }
+      const dlat = parseFloat($('#destLat').value);
+      const dlng = parseFloat($('#destLng').value);
+      const dname = encodeURIComponent($('#destName').value || '목적지');
+      if(!isFinite(dlat) || !isFinite(dlng)) { alert('목적지 좌표를 입력하세요.'); return; }
       const sname = encodeURIComponent('현재 위치');
-      const dname = encodeURIComponent(p.place_name || '목적지');
-      const appname = encodeURIComponent(location.origin.replace('http://','').replace('https://',''));
-      const slat = state.user.lat, slng = state.user.lng, dlat = lat, dlng = lng;
-
-      // 네이버 지도 (앱 스킴)
-      const naverCar = `nmap://route/car?slat=${slat}&slng=${slng}&sname=${sname}&dlat=${dlat}&dlng=${dlng}&dname=${dname}&appname=${appname}`;
-      const naverPublic = `nmap://route/public?slat=${slat}&slng=${slng}&sname=${sname}&dlat=${dlat}&dlng=${dlng}&dname=${dname}&appname=${appname}`;
-      $('#naverCar').href = naverCar;
-      $('#naverPublic').href = naverPublic;
-
-      // 티맵 (앱 스킴)
-      const tmap = `tmap://route?startx=${slng}&starty=${slat}&goalx=${dlng}&goaly=${dlat}&goalname=${dname}&reqCoordType=WGS84&resCoordType=WGS84`;
-      $('#tmapCar').href = tmap;
+      const appname = encodeURIComponent(location.hostname || 'random-trip');
+      const slat = s.lat, slng = s.lng;
+      let url = '';
+      if(mode==='car'){
+        url = `nmap://route/car?slat=${slat}&slng=${slng}&sname=${sname}&dlat=${dlat}&dlng=${dlng}&dname=${dname}&appname=${appname}`;
+      } else {
+        url = `nmap://route/public?slat=${slat}&slng=${slng}&sname=${sname}&dlat=${dlat}&dlng=${dlng}&dname=${dname}&appname=${appname}`;
+      }
+      // 모바일에서 앱 스킴 실행, 데스크톱/미설치 환경 대비 웹지도로도 열어보기 시도
+      const webFallback = `https://map.naver.com/p/directions/${slng},${slat},${sname}/${dlng},${dlat},${dname}/-/transit`;
+      // 우선 앱 스킴 오픈
+      const a = document.createElement('a');
+      a.href = url; a.target = '_blank'; document.body.appendChild(a); a.click(); a.remove();
+      // 약간의 지연 후 웹 백업도 열 수 있도록 (선택)
+      setTimeout(()=>{ window.open(webFallback, '_blank'); }, 800);
     }
 
-    async function recommend(){
-      if(!placesService){ alert('지도가 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.'); return; }
-      const conceptKey = $('#concept').value;
-      const radius = pickRadiusMeters();
-      const all = await searchAround({ radius, conceptKey });
-      const unique = uniqueById(all)
-        .filter(p => p.x && p.y)
-        .map(p => ({...p, __dist: haversine(state.user.lat, state.user.lng, parseFloat(p.y), parseFloat(p.x)) }))
-        .filter(p => p.__dist <= radius + 2000);
-      if(unique.length === 0){ alert('조건에 맞는 장소를 찾지 못했습니다. 거리/컨셉을 조정해보세요.'); return; }
-      shuffle(unique);
-      const chosen = chooseBest(unique);
-      showSelection(chosen);
-    }
-
-    async function nearbyFood(type){
-      // type: 'FD6' (음식점) | 'CE7' (카페)
-      const p = state.selected; if(!p){ alert('먼저 여행지를 추천받아 선택해주세요.'); return; }
-      const loc = new kakao.maps.LatLng(parseFloat(p.y), parseFloat(p.x));
-      const radius = 1500; // 1.5km
-      return new Promise((resolve)=>{
-        placesService.categorySearch(type, (data, status)=>{
-          if(status === kakao.maps.services.Status.OK){
-            const picks = data.filter(x=>x.x && x.y);
-            if(picks.length){
-              shuffle(picks);
-              const choice = picks[0];
-              const msg = `${type==='FD6'?'맛집':'카페'} 랜덤 추천: \n${choice.place_name}\n${choice.road_address_name || choice.address_name || ''}`;
-              alert(msg);
-            } else {
-              alert('주변에서 결과가 없어 더 넓게 검색해보세요.');
-            }
-          } else {
-            alert('검색 실패. 잠시 후 다시 시도해주세요.');
-          }
-          resolve();
-        }, { location: loc, radius });
-      });
-    }
-
-    // ===== Event Bindings ===== //
     window.addEventListener('DOMContentLoaded', ()=>{
-      try { kakao.maps.load ? kakao.maps.load(bootMap) : bootMap(); } catch(e){ alert('Kakao 지도 로드 실패. App Key를 확인해주세요.'); }
       $('#btnUseGPS').addEventListener('click', useGPS);
-      $('#btnRecommend').addEventListener('click', recommend);
-      $('#btnFood').addEventListener('click', ()=>nearbyFood('FD6'));
-      $('#btnCafe').addEventListener('click', ()=>nearbyFood('CE7'));
+      $('#btnNaverCar').addEventListener('click', ()=>openNaverRoute('car'));
+      $('#btnNaverPublic').addEventListener('click', ()=>openNaverRoute('public'));
     });
   </script>
 </body>
